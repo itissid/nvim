@@ -1,0 +1,1 @@
+/Users/sidharth/.vim/nvim_init.vim
