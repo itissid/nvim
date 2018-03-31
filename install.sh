@@ -25,4 +25,5 @@ rm -rf ~/.config/nvim ~/.tmux.conf \
 && ln -s $(pwd)/tmux.conf ~/.tmux.conf \
 && mkdir ~/.config/nvim/colors \
 && ln -s $(pwd)/colors/seattle.vim ~/.config/nvim/colors/seattle.vim \
+&& ln -s $(pwd)/bash_profile_sid ~/.bash_profile_sid \
 && nvim -c 'PlugInstall' -c 'qa!'
