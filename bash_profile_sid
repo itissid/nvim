@@ -1,0 +1,60 @@
+# Add logging to your history to make searching easier
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, don't overwrite it
+mkdir -p ~/.log/
+export PROMPT_COMMAND='if [ "$(id -u)" -ne 0 ]; then echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> ~/.logs/bash-history-$(date "+%Y-%m-%d").log; fi'
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+test -f ~/.git-completion.bash && . $_
+
+unameOut="$(uname -s)"
+
+# Save and reload the history after each command finishes
+export EDITOR=vim
+set -o vi
+# useful for retaining prompt color when screen starts
+export force_color_prompt=yes
+export GRADLE_USER_HOME=/cache/gradle 
+complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
+# For pyenv
+#export PATH="/home/sid/.pyenv/bin:$PATH"
+#eval "$(pyenv init -)" || echo ""
+#eval "$(pyenv virtualenv-init -)" || echo ""
+export PS1="\A:\w\n>> "
+export PATH=~/bin:$PATH
+
+# Set JAVA HOME
+case "${unameOut}" in
+    Linux*)     
+        machine=Linux
+        if [[ -a '/usr/lib/jvm/java-8-openjdk-amd64/' ]]; then
+            export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+        fi;;
+    Darwin*)   
+        machine=Mac
+        if [[ -a '/usr/libexec/java_home' ]]; then
+            export JAVA_HOME=$(/usr/libexec/java_home)
+        fi;;
+    CYGWIN*)    machine=Cygwin;;
+    MINGW*)     machine=MinGw;;
+    *)          machine="UNKNOWN:${unameOut}";;
+esac
+
+# For java home in my mac osx
+# For maven
+if [ -f "/usr/local/apache-maven/bin/mvn" ]; then
+    export PATH=$PATH:/usr/local/apache-maven/bin/
+fi
+
+# Temporary
+export iview_2017=~/Dropbox/workspace/iview_2017/python/interactive-coding-challenges/
+
+# For solr
+if [[ -a "${HOME}/opt/solr-4.7.0" ]]; then
+    export SOLR_HOME="${HOME}/opt/solr-4.7.0"
+fi
+
+# When starting vim in TMUX it does not remember the colorscheme. Fix this by forcing tmux to recognize 256 colors
+# https://stackoverflow.com/questions/10158508/lose-vim-colorscheme-in-tmux-mode
+alias tmux="TERM=screen-256color-bce tmux"
